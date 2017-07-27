@@ -28,7 +28,16 @@ class Ipset_rpcd:
                                  help="the port to listen on")
         self.parser.add_argument("--config", default="ipset.conf",
                                  help="config file to read ipset mapping from")
+        self.parser.add_argument("--test",
+                                 help=argparse.SUPPRESS)
         self.args = self.parser.parse_args()
+
+        # the command to update the ipset
+        self.command = ["sudo", "-n", "ipset"]
+
+        if self.args.test:
+            self.log.info("Started in test mode!")
+            self.command = [self.args.test]
 
         # Init config
         self.config = configparser.ConfigParser()
@@ -146,8 +155,7 @@ class Ipset_rpcd:
             "User {user}: {action} ipset {ipset} with items {items}").format(
             user=user, action=action, ipset=ipset, items=items))
 
-        args = [
-            "sudo", "-n", "ipset",
+        args = self.command + [
             str(action), "-exist", str(ipset),
             items.format(ip=ip, mac=mac)
             ]

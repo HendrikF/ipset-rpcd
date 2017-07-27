@@ -1,2 +1,5 @@
 /nginx/htpasswd
 /ipset.conf
+/test.log
+/test.log.expected
+/test-ipsets.conf
